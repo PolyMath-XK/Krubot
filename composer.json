@@ -1,0 +1,45 @@
+{
+    "name": "krubik/krubot",
+    "description": "The Galactic Singularity Engine for building intelligent bots on Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "DoKtor K.",
+            "email": "K-email@example.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "laravel/framework": "^11.0",
+        "rubikabot/rubikabot": "dev-main",
+        "erfanvahabpour/bale-bot-sdk": "1.0.5",
+        "irazasyed/telegram-bot-sdk": "3.15.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "KrubiK\\": "src/"
+        },
+        "files": [
+            "src/WarLording/Helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KrubiK\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KrubiK\\Providers\\KrubotRouteProvider",
+                "KrubiK\\Providers\\KrubotServiceProvider"
+            ],
+            "aliases": {
+                "KruboT": "KrubiK\\Facades\\KruboT"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
