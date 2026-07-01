@@ -1,17 +1,19 @@
 {
     "name": "krubik/krubot",
-    "description": "The Galactic Singularity Engine for building intelligent bots on Laravel.",
+    "description": "The Galactic Singularity Engine for building Intelligent bots on Laravel.",
     "type": "library",
     "license": "MIT",
+    "homepage": "https://StoryKo.de",
     "authors": [
         {
             "name": "DoKtor K.",
-            "email": "K-email@example.com"
+            "email": "dxk@storyko.de",
+            "homepage": "https://StoryKo.de/DXK",
         }
     ],
     "require": {
         "php": ">=8.2",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "rubikabot/rubikabot": "dev-main",
         "erfanvahabpour/bale-bot-sdk": "1.0.5",
         "irazasyed/telegram-bot-sdk": "3.15.0"

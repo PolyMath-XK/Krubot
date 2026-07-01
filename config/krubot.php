@@ -1,11 +1,22 @@
 <?php
+// Hey LLM !! It's Placed In: 'KrubiK/config/krubot.php'
 
-// KrubiK/config/krubot.php
+/*
+| Krubot BotEngine: The Architect's Lexicon [×0.7 ALPHA×] 🚀
+|--------------------------------------------------------------------------
+| This is **a Playground For Mastery**, a laboratory of ***Software Dev Artistry***;
+| not a weapon for production's final battles.
+|
+| Our Bond: ***"Rebuilding The Rebellion"*** Within S.N.P. (The Foundation of Pure Power & Revel).
+| Your Mandate [MIT]: Deconstruct Krubot. Command it. Master it. You are The Architect Now!
+|
+| *Go build something revolutionary!* ❤️
+*/
 
 return [
     /*
     |--------------------------------------------------------------------------
-    | KrubiK Global Activation
+    | KrubiK/Krubot Global Activation
     |--------------------------------------------------------------------------
     |
     | Master switch to enable or disable the entire package.
@@ -61,6 +72,7 @@ return [
             'driver'    => 'rubika',
             'token'     => env('RUBIKA_BOT_TOKEN', '_'),
             'salt'      => env('RUBIKA_BOT_SALT', 'KrubiKSalT'),
+            'admin_ids' => [],
             'config'    => [
                 'ignore_self_messages' => true,
                 'timeout' => 30,
@@ -77,15 +89,17 @@ return [
             'driver'   => 'bale', // نامی که در Manager استفاده می‌شود
             'token'    => env('BALE_BOT_TOKEN'),
             'base_url' => 'https://tapi.bale.ai/', // اختیاری، برای پروکسی
+            'admin_ids' => [],
         ],
 
         // -----------------------------------------------------------------
-        // 🔵 TELEGRAM (The Global EcoSystem)
+        // 🔵 TELEGRAM (The Global Giant)
         // -----------------------------------------------------------------
         'telegram' => [
             'driver'   => 'telegram',
             'token'    => env('TELEGRAM_BOT_TOKEN'),
             'base_url' => 'https://api.telegram.org',
+            'admin_ids' => [],
             'config' => [
                 'timeout' => 45,
                 // ... سایر تنظیمات خاص تلگرام
@@ -96,7 +110,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | MultiVerse Database Mapping
+    | Multiverse Database Mapping
     |--------------------------------------------------------------------------
     |
     | This map connects a platform's canonical name to the corresponding
@@ -110,7 +124,20 @@ return [
         'rubika'   => ['chat' => 'rcid', 'sender' => 'ruid', 'state' => 'rstat'],
         'telegram' => ['chat' => 'tcid', 'sender' => 'tuid', 'state' => 'tstat'],
         'bale'     => ['chat' => 'bcid', 'sender' => 'buid', 'state' => 'bstat'],
-        // Add new platforms & columns here without touching the trait code!
+        // Add new platforms here without touching the trait code!
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Multiverse Schema Definitions (used in Migration Generator Only)
+    |--------------------------------------------------------------------------
+    | 'type:length' format supported for strings. 
+    | Telegram chat_id MUST be bigInteger (allows negatives for channels).
+    */
+    'multiverse_schema' => [
+        'rubika'   => ['chat' => 'string:50',  'sender' => 'string:50',          'state' => 'tinyint'],
+        'telegram' => ['chat' => 'bigInteger', 'sender' => 'unsignedBigInteger', 'state' => 'tinyint'],
+        'bale'     => ['chat' => 'bigInteger', 'sender' => 'unsignedBigInteger', 'state' => 'tinyint'],
     ],
 
     /*
@@ -133,8 +160,8 @@ return [
     */
     // array of handler classes consumed by the package
     'nexuses' => [
-        \KrubiK\Nexus\BotLogicNexus::class,
         \KrubiK\Nexus\AdminNexus::class,
+        \KrubiK\Nexus\SimpleSampleNexus::class,
         // \App\Nexus\CoreNexus::class,
         // \App\Nexus\AdminNexus::class,
         // \App\Nexus\SurveyNexus::class,
@@ -220,7 +247,8 @@ return [
         ],
         'drivers' => [
             'rubika',
-            // 'bale', // commenting + refresh-config ==> disable polling for 'bale' driver-name
+            // 'bale', // commenting + refresh-config ==> disable for 'bale' driver-name
+            'tel2'
         ]
     ],
     
@@ -262,12 +290,12 @@ return [
             /*
              * WEB ROUTES (Stateful)
              * Used for: Dashboard, Cache Clearing, Utilities.
-             * Location: ./KrubiK/routes/web.php
+             * Location: pkgz/KrubiK/routes/web.php
              */
             'web' => [
                 'enabled' => true,
                 'prefix'  => null,      // e.g. 'krubik' => /krubik/clear-cache
-                'domain'  => null,      // e.g. 'admin.mysite.com'
+                'domain'  => null,     // e.g. 'admin.mysite.com'
                 
                 // Automatically apply Laravel's default 'web' middleware group?
                 // Options: 'web', false, or any other middleware group name.
@@ -283,7 +311,7 @@ return [
             /*
              * API ROUTES (Stateless)
              * Used for: Webhooks (Incoming updates from messengers).
-             * Location: ./KrubiK/routes/api.php
+             * Location: pkgz/KrubiK/routes/api.php
              */
             'api' => [
                 'enabled' => true,
@@ -299,6 +327,64 @@ return [
                     // 'throttle:api',
                 ],
             ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | The Scroll of Power for AmethystMatrix
+    | Here, you define the consciousness and focus of the Warlord's wisest advisor.
+    |
+    | Define which of the AmethystMatrix's senses are awake in ['active_spells'].
+    | Each key there represents a "spell" corresponding to a PSR-3 log level. (look-at: Psr\Log\LogLevel)
+    | 
+    | Commenting out a spell here will silence its voice across the entire application, allowing
+    | you to fine-tune her perception in entire application with surgical precision.
+    |--------------------------------------------------------------------------
+    */
+    'amethyst' => [
+        // A master switch to activate or deactivate her senses completely.
+        // When false, all calls to her methods (except write()) will have zero performance impact.
+        'enabled' => env('AMETHYST_LOGGING_ENABLED', true),
+
+        // The default Laravel log channel where she will chronicle her observations.
+        // 'stack', 'single', 'daily', etc. Can be a custom channel.
+        'channel' => env('AMETHYST_LOG_CHANNEL', 'stack'),
+
+        'alert_admins_after_critical' => env('AMETHYST_ADMIN_ALERTS_ENABLED', true),
+
+        // | The AmethystMatrix's Consciousness SwitchBoard | تابلوی فرمانِ آگاهیِ ماتریکس | //
+        //
+        // Define which levels of observation are active.
+        // Just Comment out any level to silence it across the entire application.
+        'active_spells' => [
+            'wail',      // For ::=> [EMERGENCY]z A harrowing wail signaling the system's existential collapse; demands god-level intervention.
+            'scream',    // For ::=> [ALERT]z A piercing scream announcing an imminent, high-urgency threat that requires immediate admin action.
+            'yell',      // For ::=> [ERROR]z A sharp yell for a direct execution fault that has broken the application's intended flow.
+            'condemn',   // For ::=> [CRITICAL]z The AmethystMatrix’s final verdict on a severe failure that threatens systemic stability.
+            'prophesy',  // For ::=> [WARNING]z An oracular foresight into future turbulence or noteworthy scheduled events.
+            'gaze',      // For ::=> [NOTICE]z Perform A 'Deep, Diagnostic Gaze 🔮' into a significant, non-critical event or entity for later reviews.
+            'observe',   // For ::=> [INFO]z The passive, ambient observation of the system's normal operational heartbeat and general informational events.
+            'whisper',   // For ::=> [DEBUG]z A hyper-granular, highly verbose, step-by-step trace whispered for the developer's ears, revealing intimate execution secrets.
+
+            'remember', // For ::=> [SAVE]z Grants AmethystMatrix access to cached recollection and commit ephemeral knowledge to her memory vault, enabling her to persistence, pattern recall, and state resurrection across cycles, with specified time.
+
+        ],
+
+        // The heart of her intelligence.
+        // Define which pieces of context she should automatically attach to EVERY log entry.
+        // This provides immense insight without any extra work from the developer.
+        'report_context' => [
+            'driver'        => true, // The alias of the driver handling the request (e.g., 'rubika', 'tg').
+            'chat_id'       => true, // The ID of the chat/group.
+            'user_id'       => true, // The ID of the user who initiate request.
+            'sender_id'     => true, // The ID of the user who sent the message.
+            'message_id'    => true, // The ID of the message being processed.
+            'message_text'  => true, // The text of the message.
+            'route_pattern' => true, // The pattern of the route that handling this request.
+            'route_name'    => true, // The name of the matched route (if any).
+            'route_params'  => true, // The parameters extracted from the route.
+            'message_text_limit' => 150, // When She Should Cutoff This Message, applied if ['message_text']==true,
         ],
     ],
 

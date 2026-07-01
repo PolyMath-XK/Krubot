@@ -1,0 +1,10 @@
+{
+    "divine_log_start": "🕊️ توزیع‌کننده مداخلات الهی شروع شد در ساعت :time",
+    "divine_log_section_active": "🚀 سکشن :section فعال است. پردازش کاربران...",
+    "divine_log_cycle_finished": "✅ چرخه توزیع پایان یافت.",
+    "divine_log_golden_moment": "✨ لحظه طلایی برای کاربر :id در سکشن :section یافت شد. در حال ارسال...",
+    "divine_log_dispatched": "✅ پیام به :rubika_id ارسال شد [Sec::section | KPI::kpi%] -> ID::msg_id",
+    "divine_log_failed": "⚠️ ارسال پیام الهی به کاربر :id ناموفق بود. دلیل: :reason",
+    "divine_msg_header": "📊 *گزارش وضعیت معنوی/مالی شما*\n\n",
+    "divine_msg_default": "مسیر نور همیشه باز است."
+}

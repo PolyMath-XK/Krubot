@@ -1,0 +1,16 @@
+<?php
+
+namespace {{ namespace }};
+
+use KrubiK\Krubot;
+use KrubiK\Attributes\OnCommand;
+use KrubiK\Attributes\OnText;
+
+class {{ class }}
+{
+    #[OnCommand('hello {{ name_snake }}')]
+    public function greet(Krubot $bot)
+    {
+        $bot->reply('Hello from the {{ class }} Nexus! 🚀')->send();
+    }
+}
