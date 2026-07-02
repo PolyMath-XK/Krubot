@@ -13,6 +13,7 @@ on:
       - 'README.mdx' # Trigger if the main template file changes.
       - 'Code_Showcase.md' # Trigger if the specific 'Code_Showcase.md' file changes (now at root).
       - '.github/workflows/compile_readme.yml' # Trigger if the workflow definition itself changes, for self-correction.
+      - '.github/scripts/compile_readme.php' # Trigger if the workflow logic changes, for self-correction.
 
 # 2. PERMISSIONS (The God-Mode Authorization)
 # This is CRITICAL. It grants the GitHub Actions bot the necessary authority
@@ -55,7 +56,7 @@ jobs:
           coverage: none     # Disables code coverage tools for maximum performance.
 
       # Step 3: The PolyMath Alchemy - Compiling the README.md.
-      # This step executes an INLINE PHP SCRIPT directly. This is a HYPER-PERFORMANCE technique
+      # This step executes an PHP SCRIPT directly. This is a HYPER-PERFORMANCE technique
       # as it avoids the overhead of creating, writing, and executing a separate script file.
       # It leverages native PHP capabilities for speed and efficiency.
       - name: "🛠️ Transmute README_TEMPLATE to README.md"
