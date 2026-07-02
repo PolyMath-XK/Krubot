@@ -61,7 +61,8 @@ jobs:
       - name: "🛠️ Transmute README_TEMPLATE to README.md"
         id: compile_step # Assigns an ID to this step for potential future referencing (e.g., passing outputs).
         run: |
-          php -r '
+          php -r "$(cat <<'EOPHP'
+          <?php // CRITICAL: Start with <?php tag inside the Heredoc to ensure PHP parsing context.
           /**
            * @author: Pro-Gemini-XTR 
            * @description: Orchestrates the dimensional merging of Markdown fragments into a unified README.md.
@@ -152,7 +153,8 @@ jobs:
           // If content has actually changed, write the new compiled content to README.md.
           file_put_contents(README_OUTPUT_PATH, $compiledContent);
           echo "[SUCCESS] The Ultimate Krubot Lexicon is forged and ready for serve &/ manifestation. 🔮\n";
-          '
+          EOPHP
+          )"
 
       # Step 4: Commit and Push the final output back to the repository.
       # This step is meticulously designed for maximum performance, minimal noise, and infinite loop prevention.
