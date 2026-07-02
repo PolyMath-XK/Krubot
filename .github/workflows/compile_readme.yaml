@@ -62,7 +62,6 @@ jobs:
         id: compile_step # Assigns an ID to this step for potential future referencing (e.g., passing outputs).
         run: |
           php -r "$(cat <<'EOPHP'
-          <?php // CRITICAL: Start with <?php tag inside the Heredoc to ensure PHP parsing context.
           /**
            * @author: Pro-Gemini-XTR 
            * @description: Orchestrates the dimensional merging of Markdown fragments into a unified README.md.
