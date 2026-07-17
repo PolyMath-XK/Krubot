@@ -81,6 +81,12 @@ if (! function_exists('warlord')) {
         return $bot->via($driverAlias);
     }
 }
+if (! function_exists('krubot')) {
+    function krubot(string|array|null $driverAlias = null): Krubot
+    {
+        return warlord($driverAlias);
+    }
+}
 
 if (! function_exists('phantomshell')) {
     /**

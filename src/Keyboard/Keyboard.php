@@ -15,7 +15,7 @@ namespace KrubiK\Keyboard;
 
 use RubikaBot\Keyboard\Keypad as BaseKeypad;
 use RubikaBot\Keyboard\Button as BaseButton;     // کلاس والد دکمه (جهت تایپ‌هینتینگ و سازگاری با RubikaBot)
-use KrubiK\Keyboard\Button as PowerButton;       // کلاس تقویت‌شده دکمه ما
+// use KrubiK\Keyboard\Button as PowerButton;       // کلاس تقویت‌شده دکمه ما
 use Closure;
 
 /**
@@ -243,6 +243,15 @@ class Keyboard extends BaseKeypad
     {
         return $this->rightToLeft($active);
     }
+    public function ltr(bool $active = true): static
+    {
+        return $this->rightToLeft(!$active);
+    }
+    public function leftToRight(bool $active = true): static
+    {
+        return $this->rightToLeft(!$active);
+    }
+
 
     /**
      * اجرای شرطی کد (Conditional Builder).

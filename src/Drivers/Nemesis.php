@@ -206,7 +206,7 @@ class Nemesis extends Manager
         $dna['config'] = $dna['config'] ?? [];
         $dna['config']['driver_alias'] = (string) Platform::Rubika();
 
-        return new RubikaDriver($dna['config']);
+        return new RubikaDriver($dna);
     }
 
     /**

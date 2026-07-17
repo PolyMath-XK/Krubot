@@ -25,7 +25,7 @@ use KrubiK\Drivers\Nemesis as KrubotManager;
 use Throwable;
 
 /**
- * FetchRubikaUpdates v4.0 (Infinity Protocol)
+ * FetchDriverUpdates v4.0 (Infinity Protocol)
  *
  * This Job replicates the classic "Long Polling" loop mechanism but adapted for
  * Laravel's Queue Architecture. Instead of blocking a process indefinitely with `while(true)`,
@@ -35,14 +35,14 @@ use Throwable;
  * It handles:
  * 1. Secure Offset Management (via Laravel Cache instead of flat files).
  * 2. Bulk Update Fetching (getUpdates).
- * 3. Dispatching `HandleRubikaUpdate` for each individual message (The Aegis Protocol).
+ * 3. Dispatching `HandleDriverUpdate` for each individual message (The Aegis Protocol).
  *
  * @author DoKtor K.
  * @link https://StoryKo.de Official website of engine.
  * @version Krubot: ×v0.7ALPHA×
  * @license MIT
 **/
-class FetchRubikaUpdates implements ShouldQueue
+class FetchDriverUpdates implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -79,7 +79,7 @@ class FetchRubikaUpdates implements ShouldQueue
      * @param KrubotManager $manager The singleton KrubotManager instance (injected).
      * @return void
      */
-    public function handle(KrubotManager $bot): void
+    public function handle(KrubotManager $manager): void
     {
         // -----------------------------------------------------------------
         // 🛑 PHASE 0-A: CONFIG CHECK (The Kill Switch)
@@ -107,6 +107,9 @@ class FetchRubikaUpdates implements ShouldQueue
         // Otherwise, polling 'rubika' would block polling 'tel2'.
         $lockKey = "krubik:polling:gatekeeper:{$this->driverName}";
 
+        // Attempt to acquire lock for 10s. If occupied (by Lazarus or Pulse), abort gracefully.
+        $lock = Cache::lock($lockKey, 10);
+
         if (!$lock->get()) {
             // Optional: Log collision only for debugging
             // Log::debug("FetchRubikaUpdates: Skipped execution. Another instance is already fetching.");
@@ -123,7 +126,7 @@ class FetchRubikaUpdates implements ShouldQueue
 
             // 1. Resolve the Bot Instance
             // Manager creates the specific bot for 'tel2' or 'rubika'
-            $bot = $manager->driver($this->driverName);
+            $botDriver = $manager->driver($this->driverName);
 
             // 2. Prepare Dynamic Offset Key
             // e.g. krubot:polling:rubika:offset_id
@@ -141,10 +144,10 @@ class FetchRubikaUpdates implements ShouldQueue
             // =================================================================
             // STEP 2: EXECUTE API CALL (getUpdates)
             // =================================================================
-            // We use the injected $bot instance to call the API.
+            // We use the injected $botDriver instance to call the API.
             // Note: Ensure getUpdates() is public/accessible in your Krubot/Bot class.
-            $updatesResponse = $bot->getUpdates($params);
-            // $bot is now the correct instance (TelegramDriver or RubikaDriver)
+            $updatesResponse = $botDriver->getUpdates($params);
+            // $botDriver is now the correct instance (TelegramDriver or RubikaDriver)
             // Polymorphism for getUpdates() handles the rest.
 
             // =================================================================
@@ -175,18 +178,18 @@ class FetchRubikaUpdates implements ShouldQueue
             // STEP 5: DISPATCH PROCESSING JOBS (FAN-OUT)
             // =================================================================
             // Instead of processing inside the loop, we delegate each message
-            // to the Aegis Protocol (HandleRubikaUpdate). This allows parallel processing!
+            // to the Aegis Protocol (HandleDriverUpdate). This allows parallel processing!
             
             foreach ($updatesResponse['data']['updates'] as $updateRaw) {
-                // We wrap the update in a standard structure expected by HandleRubikaUpdate
+                // We wrap the update in a standard structure expected by HandleDriverUpdate
                 // The older code did: $this->update = ['update' => $update];
                 // $payload = ['update' => $updateRaw];
 
                 // Dispatch the Aegis Protocol Job for this specific message.
                 // This puts the processing into the queue, keeping the Poller light and fast.
-                // HandleRubikaUpdate::dispatch($payload);
+                // HandleDriverUpdate::dispatch($payload);
 
-                HandleRubikaUpdate::dispatch([
+                HandleDriverUpdate::dispatch([
                     'update' => $updateRaw,
                     'driver' => $this->driverName // Optional: Pass context
                 ]);

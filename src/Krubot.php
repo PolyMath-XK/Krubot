@@ -37,10 +37,10 @@ namespace KrubiK;
 */
 
 use KrubiK\DTOs\Message;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\AmethystMatrix;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Str;
 use KrubiK\Attributes\Name;
@@ -52,15 +52,19 @@ use KrubiK\Attributes\OnRegEx;
 use KrubiK\Middlewares\ConversationMiddleware; // ⚡ Import Middleware
 use KrubiK\WarLording\CommandOutcomeShifter;
 use KrubiK\Router\Route; // ⚡ Import Route Class
+use KrubiK\Drivers\Contracts\BotDriverInterface;
 use KrubiK\Jobs\HandleDriverUpdate;
 use KrubiK\DTOs\RubikaInboundPayload;
 use ReflectionClass;
 use ReflectionMethod;
+use Throwable;
 use Closure;
+
+use KrubiK\Helpers\AmethystMatrix; // ⚡ Import the Sorceress
 
 use KrubiK\Arcane\InteractsWithApi;
 use KrubiK\Arcane\InteractsWithContext; // ⚡ Import Context
-use KrubiK\Arcane\HasAmethystMatrix; // ⚡ Import the Sorceress
+use KrubiK\Arcane\HasAmethystMatrix;
 use KrubiK\Arcane\HasCommandGroups;
 use KrubiK\Arcane\AdvancedRouting;
 use KrubiK\Arcane\ProfessionalWarLordingToolkit;
@@ -479,7 +483,7 @@ class Krubot
 
             // For consistency with the new architecture, we wrap the macro's result
             // in a CommandOutcomeShifter object. This makes macros chainable with `->then()` too.
-            return static::$wrapsInOutcome
+            return $this->wrapsInOutcomeShifter
                 ? (new CommandOutcomeShifter($this, $result))
                 : $result;
         }
@@ -528,7 +532,7 @@ class Krubot
             if (count($aliases) === 1) {
                 $result_maker = fn() => $driver->{$method}(...$parameters);
                 $driver = $this->core(reset($aliases));
-                return static::$wrapsInOutcome
+                return $this->wrapsInOutcomeShifter
                     ? CommandOutcomeShifter::execute($this, $result_maker)
                     : $result_maker();
             }
@@ -543,7 +547,7 @@ class Krubot
             // PRIORITY 3: Default Driver Execution
             // All calls to the default driver are wrapped in CommandOutcomeShifter.
             $result_maker = fn() => $this->core()->{$method}(...$parameters);
-            return static::$wrapsInOutcome
+            return $this->wrapsInOutcomeShifter
                 ? CommandOutcomeShifter::execute($this, $result_maker)
                 : $result_maker();
 
@@ -565,7 +569,7 @@ class Krubot
         }
 
         // Wrap the result in a CommandOutcomeShifter, making every standard call chainable.
-        return static::$wrapsInOutcome
+        return $this->wrapsInOutcomeShifter
             ? (new CommandOutcomeShifter($this, $result))
             : $result;
     }
@@ -1164,7 +1168,7 @@ class Krubot
         /// $route = new Route($pattern, $handler, $attrs); ///
 
         // Create the Route Object (Class Signature #2)
-        $route = new Route($pattern, $handler, $attrs, $registrar);
+        $route = new Route($pattern, $handler, $attrs); //|// , $registrar
         
         // Store in routes array
         $this->routes[$pattern] = $route;
@@ -2128,6 +2132,164 @@ class Krubot
 
         // Final Fail-safe
         return null;
+    }
+
+    /**
+     * 🛡️ The Divine Shield of Resilience (resilientCall/rescueResult method) 🛡️
+     *
+     * This method imbues Krubot with a divine shield, allowing it to gracefully
+     * Executes a given callback, gracefully catching any exceptions thrown within it.
+     * 
+     * Acts as a metaphysical force-field, allowing Krubot to continue his mission 
+     * even when unforeseen turbulences arise, ensuring a seamless
+     * user experience and robust system operation.
+     *
+     * It integrates deeply with AmethystMatrix for intelligent logging and
+     * offers a flexible custom exception handler, embodying the ultimate HyperDX.
+     *
+     * @param callable $op          The risky operation to execute.
+     * @param mixed   $def      TThe value to return if an exception is caught. Defaults to null.
+     * @param Closure|null $exceptionHandler Optional. A custom callback to handle the caught exception.
+     *                                   It receives: `function(Throwable $e, Krubot $bot): mixed` as arguments.
+     *                                   If this handler returns a non-null value, that value (from exceptionHandler) will be used
+     *                                   instead of the `defaultValue`. This is where `$handleException($e, $this);`
+     *                                   concept finds its ultimate expression.
+     * @param null|bool    $useLaravelContainer If true, the callback will be executed via `App::call()`,
+     *                                   enabling automatic dependency injection for its parameters. Defaults to false for maximum performance.
+     * @param null|bool    $logExceptions      Optional. Whether to log the exception via AmethystMatrix. Defaults to null.
+     * @return mixed The result of the callback, the default value, or the result of the customExceptionHandler.
+    */
+    public function resilientRun(
+        callable $op,
+        mixed $def = null,
+        ?Closure $exceptionHandler = null,
+        ?bool $useLaravelContainer = null, // ⚡️ NEW: Control Laravel IoC container usage
+        ?bool $logExceptions = null         // Changed to nullable for dynamic fallback
+    ): mixed {
+
+        // ⚡ HyperDX Logic: Harmonizing explicit call parameters with Krubot's internal configuration.
+        // If the method parameter is explicitly provided (not null), it takes precedence.
+        // Otherwise, Krubot consults its internal 'bRCUseLaravelContainer' and 'bRCLogException' states.
+        $bUseLaravelContainer = $useLaravelContainer ?? $this->bRCUseLaravelContainer;
+        $bLogException = $logExceptions ?? $this->bRCLogException;
+
+        // rename variables
+        $callback = &$op;
+        $defaultValue = &$def;
+
+        try {
+            // Attempt to execute the sacred operation.
+            if ($bUseLaravelContainer && class_exists(App::class)) {
+                // ⚡️ Laravel Container Power: Invoke the callback using App::call()
+                // This enables automatic dependency injection for the callback's parameters.
+                // The Krubot instance ($this) is always available as a bound instance in the container.
+                // For optimal flexibility, we pass an array of parameters, ensuring Krubot is available
+                // for injection if the callback requests it.
+                return App::call($callback, ['bot' => $this, Krubot::class => $this]);
+            } else {
+                // Default execution: Directly invoke the callback
+                return $callback($this);
+                // Pass Krubot instance to the callback for context
+            }
+        } catch (Throwable $e) {
+            // A disturbance in the force detected!
+            // Engage the AmethystMatrix for cosmic record-keeping and activate The Divine Shield.
+
+            // 1. 🔮 AmethystMatrix Logging (The Oracle's Chronicle)
+            if ($bLogException && class_exists(AmethystMatrix::class)) {
+                AmethystMatrix::yell(
+                    "Krubot Divine Shield: An unexpected anomaly occurred during a protected operation.",
+                    [
+                        'error_message' => $e->getMessage(),
+                        'error_code'    => $e->getCode(),
+                        'file'          => $e->getFile(),
+                        'line'          => $e->getLine(),
+                        'trace'         => $e->getTraceAsString(),
+                        'default_value' => $defaultValue,
+                        'operation_context' => 'rescue_attempt',
+                        // ⚡ HyperDX: Auto-inject relevant Krubot context for deeper insights
+                        'bot_context'   => [
+                            'chat_id'       => $this->chatId(),
+                            'sender_id'     => $this->senderId(),
+                            'message_id'    => $this->findMessageId(),
+                            'message_text'  => $this->text(),
+                            'driver_alias'  => $this->getDriverAlias()
+                        ]
+                    ]
+                );
+            }
+
+            // 2. ⚡ Custom Exception Handler (The Warlord's Decree)
+            // If a custom handler is provided, invoke it. This is where the
+            // `$customHandlerResult = $handleException($e, $this);` concept comes to life.
+            if ($exceptionHandler instanceof Closure) {                
+
+                if ($bUseLaravelContainer && class_exists(App::class)) {
+                    // ⚡️ NEW: Laravel Container Power for exception handler
+                    // Pass the exception and Krubot instance explicitly, allowing DI for other params.
+                    $customHandlerResult = App::call($exceptionHandler, [
+                        'e' => $e,
+                        Throwable::class => $e,
+                        'bot' => $this,
+                        Krubot::class => $this
+                    ]);
+                } else {
+                    // Default execution for exception handler
+                    // Pass the exception and the current Krubot instance to the custom handler.
+                    $customHandlerResult = $exceptionHandler($e, $this);
+                }
+
+                // If the custom handler returns a non-null value, it takes precedence.
+                if ($customHandlerResult !== null) {
+                    return $customHandlerResult;
+                }
+            }
+
+            // 3. ✨ Return Default Value (The Graceful Retreat)
+            // If no custom handler or if it returned null, fall back to the default value.
+            return $defaultValue;
+        }
+    }
+    /**
+     * 🔮 Configures the IoC Container (Laravel App::call) usage for resilientCall.
+     *
+     * This method allows you to dynamically control whether subsequent calls to `resilientCall`
+     * will leverage Laravel's service container for dependency injection within callbacks
+     * and exception handlers by default. It's a powerful lever for performance optimization and
+     * architectural flexibility, embodying the HyperDX principle of granular control over
+     * Krubot's operational parameters.
+     *
+     * @param bool $useLaravelContainer If true, `resilientCall` will attempt to use `App::call()`
+     *                                  by default. If false, it will directly invoke callbacks.
+     *                                  Defaults to `true` to enable IoC by default when calling this setter.
+     * @return Krubot Returns the current Krubot instance for method chaining,
+     *                allowing for fluent configuration of Krubot's metaphysical state.
+     */
+    public function resilientIoC(bool $useLaravelContainer = true): self
+    {
+        // ⚡️ Setting the default behavior for IoC container usage across all resilient operations.
+        // This affects resilientCall when its `$useLaravelContainer` parameter is null,
+        // providing a central control point for Krubot's dependency resolution strategy.
+        $this->bRCUseLaravelContainer = $useLaravelContainer;
+        return $this; // 🚀 Chainable for fluent configuration, aligning with ECMA2026 paradigms.
+    }
+
+    /**
+     * 📡 Configures exception logging via AmethystMatrix for resilientCall.
+     *
+     * @param bool $logExceptions If true, exceptions will be logged by default. If false, they will be
+     *                           silently handled without AmethystMatrix intervention.
+     *                           Defaults to `true` to enable logging by default when calling this setter.
+     * @return Krubot Returns the current Krubot instance for method chaining,
+     *                facilitating a fluid configuration experience.
+     */
+    public function resilientLog(bool $logExceptions = true): self
+    {
+        // 📡 Setting the default behavior for exception logging across all resilient operations.
+        // This affects resilientCall when its `$logExceptions` parameter is null,
+        // granting Krubot the power to decide its level of self-reporting.
+        $this->bRCLogException = $logExceptions;
+        return $this; // 🚀 Chainable for fluent configuration.
     }
 
     // =========================================================================

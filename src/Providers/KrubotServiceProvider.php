@@ -14,8 +14,10 @@ namespace KrubiK\Providers;
 */
 
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
+use KrubiK\Drivers\Contracts\BotDriverInterface;
 use Illuminate\Support\Arr;
 use KrubiK\Krubot;
 use KrubiK\Drivers\Nemesis as KrubotManager;
@@ -120,24 +122,19 @@ class KrubotServiceProvider extends ServiceProvider implements DeferrableProvide
         // The closure is kept lean and mean for maximum performance.
         $this->app->singleton(\KrubiK\Krubot::class, function ($app) {
 
+            // Extract the universal knowledge
+            $config = $app['config']->get('krubot');
+
             // 4. KRUBOT BINDING (The Independent Commander)
             // ###. ⚡ نقطه ادغام حیاتی (The Fusion Point) ⚡ .###
-            // اینجا جایی است که مفهوم "Krubot" (کد دوم) را با "Manager" (کد اول) یکی می‌کنیم.
-            // وقتی کسی Krubot::class را صدا می‌زند، ما او را به مدیر ارجاع می‌دهیم.
-            // مدیر مسئول است که با استفاده از منطق دقیق (توکن و...) نمونه را بسازد.
 
-             // دریافت درایور فعال از مدیر
-            $driver = $app['krubot.manager']->driver();
-
-            // گارد ایمنی: اطمینان از اینکه درایور فعلی واقعاً از جنس Krubot است
-            // (مثلاً اگر درایور روی تلگرام باشد و کسی Krubot (روبیکا) بخواهد، اینجا مدیریت می‌شود)
-            if (! $driver instanceof \KrubiK\Krubot) {
-                // در حالت ایده‌آل، Krubot باید کلاس والد یا اینترفیس همه باشد،
-                // اما اگر Krubot مختص روبیکا است، اینجا همان نمونه را برمی‌گردانیم.
-                return $driver;
-            }
+            // جنگ‌سالار مستقیماً به Nemesis دستور می‌دهد تا کالبدشکافی را انجام داده
+            // و سلاح جهش‌یافته (BOW) را شخصاً تحویل دهد.
+            $bow = app('nemesis')->driver();
             
-            return $driver;
+            // 3. ⚡ Genesis: Summon the Warlord with absolute precision.
+            // We pass the Application, the deployed Soldier, and the Strategy (Config).
+            return new \KrubiK\Krubot($app, $bow, $config);
         });
 
         // The Oracle is born once, and lives forever (Singleton).

@@ -94,7 +94,7 @@ class HandleDriverUpdate implements ShouldQueue
      *                               getting the default singleton by mistake.
      * @return void
      */
-    public function handle(KrubotManager $manager): void
+    public function handle(Krubot $bot, KrubotManager $manager): void
     {
         try {
             
@@ -144,7 +144,8 @@ class HandleDriverUpdate implements ShouldQueue
             // 🛑 IDENTITY CHECK
             // Resolve the specific driver instance for this job.
             // If $this->driverName is 'bale', we get the Bale driver.
-            $bot = $manager->driver($this->driverName);
+            // $bot = $manager->driver($this->driverName);
+            // @ToDo: Force-Set Driver Identity
 
             $bot->processUpdate($messageObject);
 

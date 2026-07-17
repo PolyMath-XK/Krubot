@@ -19,7 +19,7 @@ use KrubiK\Helpers\AmethystMatrix as Log;
 use Illuminate\Support\Facades\DB;
 use KrubiK\Jobs\FetchDriverUpdates;
 use KrubiK\DivineMessageSender\Jobs\SendDivineMessageJob;
-use App\Models\DivineDispatchQueue;
+use KrubiK\DivineMessageSender\Models\DivineDispatchQueue;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -148,7 +148,7 @@ class KrubiKPulse extends Command
             try {
                 // Run the planner synchronously inside the pulse
                 // این دستور دقیقاً همان فایل PlanDivineMessages.php شما را اجرا می‌کند
-                $this->call('krubik:plan-divine-messages');
+                /// $this->call('krubik:plan-divine-messages');
                 
             } catch (\Throwable $e) {
                 Log::error("Planner Command Failed Inside Pulse: " . $e->getMessage());

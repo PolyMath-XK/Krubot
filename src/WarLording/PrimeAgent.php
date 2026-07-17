@@ -36,9 +36,9 @@ namespace KrubiK\WarLording;
 */
 
 use KrubiK\Krubot;
-use KrubiK\Contracts\BotDriverInterface;
 use KrubiK\Enums\Platform;
 use KrubiK\Helpers\PhantomShell;
+use KrubiK\Drivers\Contracts\BotDriverInterface;
 use Illuminate\Support\Traits\Macroable;
 
 use Fiber;

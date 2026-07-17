@@ -14,7 +14,7 @@ namespace KrubiK\Arcane;
 */
 
 use Closure;
-use KrubiK\Contracts\BotDriverInterface;
+use KrubiK\Drivers\Contracts\BotDriverInterface;
 use InvalidArgumentException;
 use KrubiK\Enums\Platform; // ✨ این خط باید اضافه شود
 use KrubiK\Drivers\RubikaDriver;
@@ -520,7 +520,7 @@ trait ProfessionalWarLordingToolkit
     protected function instantiateRubikaDriver(array $driverConfig): RubikaDriver
     {
         // 1. Extract the token from the specific driver config.
-        $token = $driverConfig['authtoken'] ?? null;
+        $token = $driverConfig['token'] ?? null;
 
         // 2. Perform the critical security check.
         // Critical token validation (Fail Fast)

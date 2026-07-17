@@ -1113,6 +1113,33 @@ class AgentNexus
             $bot->reply("❌ Native platform constraint triggered.")->send();
         }
     }
+
+    #[OnCommand('resilience_test')]
+    public function krubot_resilience(Krubot $bot): void
+    {
+        $serviceResult =
+            $bot
+                // Let the resilientRun() resolve it's operational params via `Laravel IoC Container`, for-example consider `CosmicService` is binded/registered somewhere in your application.
+                ->resilientIoC()
+
+                // disables auto-amethyst in resilientRun() +&> `resilientLog()` === `resilientLog(true)`
+                ->resilientLog(false)
+
+                // safe executes a callable, returns value of `def` if there was any error/expection when running this callable.
+                ->resilientRun(
+                    op: fn(CosmicService $service, Krubot $bot) => $service->synchronizeAndReturnData($bot),
+                    def: -4
+                );
+
+        if($serviceResult === -4) {
+            $bot->reply("CosmicService denied to response... ❌")->send();
+            return;
+        }
+
+        // it seemes `synchronizeAndReturnData()` returned it's correct result and it doesn't thrown any exception
+        // use `$serviceResult` super-safely.
+
+    }
 }
 ```
 

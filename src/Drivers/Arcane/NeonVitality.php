@@ -32,6 +32,8 @@ use KrubiK\Arcane\InteractsWithContext; // ⚡ Import Context
 **/
 trait NeonVitality // PowerCell / NeonSoul / NeonCore / FusionCore / FusionSoul
 {
+    use HasDriverIdentity; // Activate Listening to Nemesis Commands
+
     // 1. Context Management (Data like ->get()/set())
     use InteractsWithContext;
 

@@ -233,13 +233,13 @@ class LazarusProtocol extends Command
                 // Check 1: The Loop Limit (Prevent subtle fragmentation)
                 if ($this->loopCounter >= self::MAX_LOOPS_BEFORE_REBIRTH) {
                     $this->info("♻️ Scheduled Rebirth (Loop Limit Reached).");
-                    $this->reincarnate($driver, $tag, $isStealth); 🧪☣
+                    $this->reincarnate($driver, $tag, $isStealth); // 🧪☣
                     break;
                 }
 
                 // Check 2: Vital Signs (RAM & Time limit)
                 if ($this->shouldReincarnate()) {
-                    $this->reincarnate($driver, $tag, $isStealth); 🧪☣
+                    $this->reincarnate($driver, $tag, $isStealth); // 🧪☣
                     break;
                 }
                 // =========================================================

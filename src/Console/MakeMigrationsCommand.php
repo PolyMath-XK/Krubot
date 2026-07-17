@@ -72,7 +72,7 @@ class MakeMigrationsCommand extends Command
         $downColumnsStr = "\n            \$table->dropColumn([" . implode(', ', $downColumnsArray) . "]);\n";
 
         // Assuming stub is in the same directory structure mentioned previously
-        $stubPath = __DIR__ . '/../Stubs/add_multiverse_columns.stub';
+        $stubPath = __DIR__ . '/Stubs/add_multiverse_columns.stub';
         
         if (!File::exists($stubPath)) {
             $this->components->error("Stub file missing at: {$stubPath}");

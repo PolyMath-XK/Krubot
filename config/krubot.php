@@ -160,8 +160,8 @@ return [
     */
     // array of handler classes consumed by the package
     'nexuses' => [
-        \KrubiK\Nexus\AdminNexus::class,
-        \KrubiK\Nexus\SimpleSampleNexus::class,
+        \KrubiK\Nexus\NoxiousSamples\AdminNexus::class,
+        \KrubiK\Nexus\NoxiousSamples\SimpleSampleNexus::class,
         // \App\Nexus\CoreNexus::class,
         // \App\Nexus\AdminNexus::class,
         // \App\Nexus\SurveyNexus::class,
