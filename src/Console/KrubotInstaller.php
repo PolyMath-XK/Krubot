@@ -20,7 +20,7 @@ use Symfony\Component\Process\Process as SymfonyProcess;
 use Illuminate\Support\Facades\File; // For .env file manipulation
 
 /**
- * KrubiK::Ascend() DivineCommmand
+ * KrubiK::Ascend(▲Ѧ▲) DivineCommmand ∷Ѫ∷ **⟬>⎇⌘ѪɅ⟭** ∷Ѫ∷ ⟨`krubik:ascend`()⟩
  * Class KrubotInstaller
  * @package KrubiK\Console
  *
@@ -82,8 +82,8 @@ class KrubotInstaller extends Command
             $commandString = implode(' ', $cmd);
             $this->info("Running: <fg=cyan>{$commandString}</>"); // Display command being run
 
-            // Create a new process for the command.
-            $process = new Process($cmd);
+            // Create a new SymfonyProcess for the current command.
+            $process = new SymfonyProcess($cmd);
             $process->setTimeout(300); // Set a generous timeout for potentially long-running commands (e.g., composer require)
             $process->setIdleTimeout(60); // Timeout for inactivity
 

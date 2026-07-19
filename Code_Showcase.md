@@ -949,7 +949,7 @@ namespace App\Nexus\Features;
 use Carbon\Carbon;
 use KrubiK\Attributes\OnCommand;
 use KrubiK\Krubot;
-use KrubiK\Scheduler\DivineMessage;
+use KrubiK\DivineMessageSender\Models\DivineMessage;
 
 class SubscribeNexus
 {
