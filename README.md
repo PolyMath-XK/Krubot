@@ -1753,7 +1753,7 @@ php artisan migrate
 
 ### 🔌 Phase 4: Empower Your Application to Krubot
 
-##### Finally attach the core trait to your `User` model.<br>The trait will automatically read your config and interact flawlessly with the newly created database columns:<br><br>Optional Step 💡
+##### Finally attach the core trait to your `User` model.<br>The trait will automatically read your config and interact flawlessly with the newly created database columns:<br><br>Semi-Optional Step 💡
 ```php
 namespace App\Models;
 
@@ -1769,7 +1769,7 @@ class User extends Authenticatable
 ```
 
 ### 🔌 Phase 5: Environmental Matrix Injection (.env)
-Inject the system's consciousness by appending these core variables to your `.env` file:
+Inject the system's consciousness by appending these core variables to end your `.env` file (check them, they will overwrite):
 
 ```dotenv
 # --- KRUBOT TITANIUM CORE ---
@@ -1982,7 +1982,7 @@ The Krubot Engine equips your Laravel instance with a suite of Useful CLI comman
 
 In the traditional bot-building landscape, LLMs are forced to translate "Human Intent" into "Rusty Protocol Mechanics." KrubiK shatters this barrier by providing a **Cosmic Alignment** between machine logic, human intent, and AI flawless software architecture.
 
-KrubiK is a Paradigm Shift in bot development, specifically engineered to bridge the gap between LLM reasoning and production-grade execution.<br>
+Krubot is a Paradigm Shift in bot development, specifically engineered to bridge the gap between AI/LLM reasoning and production-grade execution.<br>
 By solving fundamental architectural friction, KrubiK has become the **Native Lexicon** for AI-driven code generation.
 
 
@@ -1995,10 +1995,10 @@ LLMs are trained to understand "Narrative," not to micro-manage raw JSON payload
 **Cognitive Context Fragmentation** is a primary failure point for LLMs. When routing, validation, and execution logic are scattered across multiple files, the model loses track of the state. KrubiK utilizes **PHP 8 Declarative Attributes** (e.g., `#[OnCommand]`, `#[Rule]`) to co-locate all critical metadata within a single Nexus (CodeBase). This encapsulation allows the AI to perceive the entire logic-set in a single "glance," enabling **flawless zero-shot generations** with high token efficiency.
 
 #### 3. Intelligent State Management Abstraction (Offloading FSM Complexity)
-Generating and maintaining Finite State Machines (FSM) for multi-step interactions is notoriously error-prone and a "death valley" of bot engineering for LLMs. KrubiK offloads this entire cognitive burden through **Native Narrative Primitives**. The AI simply declares the "Shape of the Form" and its validation rules, while the **KrubiK CyberCitadel** handles the underlying persistence, state restoration, and re-validation. This transforms a complex procedural task into a simple declarative one.
+Generating and maintaining Finite State Machines (FSM) for multi-step interactions is notoriously error-prone and a "death valley" of bot engineering for LLMs. KrubiK offloads this entire cognitive burden through **Native Narrative Primitives**. The AI simply declares the "Shape of the Form" and its validation rules, while the **Krubot** handles the underlying persistence, state restoration, and re-validation. This transforms a complex procedural task into a simple declarative one.
 
 #### 4. Frictionless Multi-Verse Architecture (Universal Driver Abstraction)
-Cross-platform development is a major source of "API Collision" in LLM outputs. Krubot’s **Warlord Architecture** introduces a platform-agnostic abstraction layer. By utilizing universal commands, the LLM is shielded from the friction of platform-specific payloads. By using `legion()` and `setWorkingVerse()`, the LLM can "Think Once, Command Universally." It business global logic without ever touching the friction of underlying driver differences, Once, and **KrubiK Cyber-Citadel** handles the translation across the "Multi-Verse" (Telegram, Rubika, Bale, etc.), ensuring the code remains portable and robust.
+Cross-platform development is a major source of "API Collision" in LLM outputs. Krubot’s **Warlord Architecture** introduces a platform-agnostic abstraction layer. By utilizing universal commands, the LLM is shielded from the friction of platform-specific payloads. By using `legion()` and `setWorkingVerse()`, the LLM can "Think Once, Command Universally." It business global logic without ever touching the friction of underlying driver differences, Once, and ***KrubiK Citadel*** handles the translation across the "Multi-Verse" (Telegram, Rubika, Bale, etc.), ensuring the code remains portable and robust.
 
 #### 5. Intentional Atomic Memory (The Semantic Vault)
 Standard persistence layers force LLMs to struggle with Redis configurations and complex key-naming conventions. KrubiK provides **Domain-Level Semantic Contracts** via `userStorage()` and the `AmethystMatrix::vault()`. **KrubiK Scoped Storage Primitives** that offer a structured language for memory management. The AI understands exactly where to place data and when to trigger self-destruction, ensuring **zero memory leaks** and intentional data persistence without implementation-level hallucinations.
