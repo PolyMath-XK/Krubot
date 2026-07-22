@@ -68,7 +68,7 @@ jobs:
       - name: "Manifest & Commit Unified README ⚒️📜🖋"
         run: |
           # Configure Git with a dedicated bot persona. This clearly indicates automatic commits (HyperDX).
-          git config --global user.name  "KrubiK Lexicon Architect"
+          git config --global user.name  "Architect of Lexicon"
           git config --global user.email "lexicon.architect@storyko.de"
           
           # Stage the generated README.md file for commit.
